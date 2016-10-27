@@ -1,0 +1,44 @@
+{
+    "participants": [
+        {
+        "isCaptain": true,
+        "fullName": "Alexandre Gingras-Courchesne",
+        "email": "alexandre.gingras-courchesne.1@ulaval.ca",
+        "phone": "(418) 446-8063",
+        "school": "Université Laval",
+        "schoolProgram": "Génie Informatique",
+        "graduationDate": 1525132800000
+        },
+        {
+        "isCaptain": false,
+        "fullName": "Alexandra Mercier",
+        "email": "alexandra.mercier.4@ulaval.ca",
+        "phone": "(418) 559-2872",
+        "school": "Université Laval",
+        "schoolProgram": "Génie Informatique",
+        "graduationDate": 1525132800000
+        },
+        {
+        "isCaptain": false,
+        "fullName": "Maxime Ménard",
+        "email": "",
+        "phone": "",
+        "school": "Université Laval",
+        "schoolProgram": "Génie Informatique",
+        "graduationDate":
+        },
+        {
+        "isCaptain": false,
+        "fullName": "Stéphanie Mercier",
+        "email": "",
+        "phone": "(418) 655-4965",
+        "school": "Université Laval",
+        "schoolProgram": "Génie Logiciel",
+        "graduationDate":
+        }
+    ],
+    "answer": [
+
+    ],
+    "teamName": "FUBAR"
+}
