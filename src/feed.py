@@ -1,18 +1,20 @@
 import json
 import math
 
+
 def find_meal(cal, nbr_ingredients):
     meal_ingredients = []
     avg_cal = _compute_average_calories(cal, nbr_ingredients)
     available_ingredients = _sanitize_ingredients(_read_ingredients())
-    while (nbr_ingredients > 0):
-        if (nbr_ingredients > 1):
-            meal_ingredients.append(available_ingredients[avg_cal])
+    while nbr_ingredients > 0:
+        if nbr_ingredients > 1:
+            meal_ingredients.append(available_ingredients[avg_cal].pop())
             cal -= avg_cal
         else:
-            meal_ingredients.append(available_ingredients[cal])
+            meal_ingredients.append(available_ingredients[cal].pop())
         nbr_ingredients -= 1
     return meal_ingredients
+
 
 def _read_ingredients():
     """ Le fichier des ingredients /data/ingredients.json """
@@ -24,13 +26,17 @@ def _read_ingredients():
     ingredients = json.loads(ingredients_as_json)
     return ingredients
 
+
 def _sanitize_ingredients(ingredients):
     ingredients_set = {}
     for ing in ingredients:
         cal_key = ing['CAL']
-        ingredients_set[int(cal_key)] = ing['ITEM']
+        if not int(cal_key) in ingredients_set.keys():
+            ingredients_set[int(cal_key)] = []
+        ingredients_set[int(cal_key)].append(ing['ITEM'])
 
     return ingredients_set
+
 
 def _compute_average_calories(calories, nbr_ingredients):
     avg = calories/nbr_ingredients
