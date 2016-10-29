@@ -18,6 +18,7 @@ def subscribe():
     global team_info
 
     _validate_request(request)
+    print(request.json)
     nbrItems = request.json['numberOfItems']
     calories = request.json['calories']
     items = feed.find_meal(calories, nbrItems)
@@ -50,4 +51,4 @@ def _get_team_info():
 
 if __name__ == "__main__":
     team_info = _get_team_info()
-    app.run()
+    app.run(host="0.0.0.0")
