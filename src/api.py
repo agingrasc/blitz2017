@@ -23,6 +23,7 @@ def subscribe():
     calories = request.json['calories']
     items = feed.find_meal(calories, nbrItems)
     team_info['answer'] = items
+    print(team_info)
     return jsonify(team_info)
 
 
