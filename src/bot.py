@@ -36,6 +36,7 @@ class SimpleBot(Bot):
         self.min_heal = 30
         self.num_death = 0
         self.hero_health = 100
+        self.hero_calories = 0
 
     def init(self):
         self.next_state = self.get_fries
@@ -65,12 +66,13 @@ class SimpleBot(Bot):
         destination = self.next_state()
 
         self.hero_health = get_hero_life(self.game)
+        self.hero_calories = get_our_hero(self.game).calories
 
         # Reset de mort et check de healing
         if self.hero_health == 0:
             self.num_death += 1
             self.next_state = self.init
-        elif (get_our_hero(self.game).calories > 30) and (self.hero_health < self.min_heal):
+        elif (self.hero_calories > 30) and (self.hero_health < self.min_heal):
             if self.next_state != self.heal:
                 self.state_before_heal = self.next_state
             self.next_state = self.heal
@@ -130,7 +132,7 @@ class SimpleBot(Bot):
 
     def heal(self):
         # Check si on a les calories pour guerir
-        if (get_our_hero(self.game).calories <= 30):
+        if self.hero_calories <= 30 :
             self.next_state = self.state_before_heal
             return 'STAY'
 
