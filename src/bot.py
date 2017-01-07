@@ -81,7 +81,7 @@ class SimpleBot(Bot):
             print("Choosing new burger")
             burger_tile, self.burger_loc = \
                 self.pathfinder.get_closest_burger(get_hero_pos(self.game))
-            print(type(self.burger_loc))
+            print("Burger tile: {} -- burger location: {}".format(burger_tile, self.burger_loc))
 
         client_burgers = self.customer.burger
         hero_burgers = get_hero_burgers(self.game)
