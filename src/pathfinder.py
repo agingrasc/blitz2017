@@ -45,10 +45,13 @@ class Pathfinder:
                 return hero.id
 
     def _get_free_food(self, food_dict):
-        print("Finding food not owned!")
         food_positions = []
         for food in food_dict.items():
-            print("Our hero id: {} -- tile owner id: {}".format(self.our_hero_id, food[1]))
-            if food[1] != self.our_hero_id:
-                food_positions.append(food[0])
+            pos, owner_id = food
+            if food[1] == "-":
+                owner_id = "-1"
+
+            if int(owner_id) != self.our_hero_id:
+                print("Food location: {} -- food owner id: {}".format(pos, owner_id))
+                food_positions.append(pos)
         return food_positions
