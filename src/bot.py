@@ -92,6 +92,8 @@ class SimpleBot(Bot):
         # Opportunity move
         opportunity_direction = self.check_for_opportunity(direction)
         if opportunity_direction:
+            print("Opportuniy: {}".format(opportunity_direction))
+            self.next_state = self.init
             return opportunity_direction
 
         hero_loc = get_hero_pos(self.game)
@@ -188,8 +190,6 @@ class SimpleBot(Bot):
                 owner_id = tile.hero_id
                 if owner_id == '-':
                     owner_id = '-1'
-                print(type(tile.hero_id))
-                print(type(get_our_hero_id(self.game)))
                 if int(owner_id) != get_our_hero_id(self.game):
                     return dir
 
