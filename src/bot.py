@@ -106,7 +106,6 @@ class SimpleBot(Bot):
         direction = get_direction(self.game, self.drink_loc)
 
         if self.pathfinder.get_distance(self.drink_loc, hero_loc) <= 1:
-            self.drink_loc = None
             self.next_state = self.get_fries
 
         return direction
