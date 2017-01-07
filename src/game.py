@@ -14,7 +14,11 @@ PLAYER4 = 4
 AIM = {'North': (-1, 0),
        'East': (0, 1),
        'South': (1, 0),
-       'West': (0, -1)}
+       'West': (0, -1),
+       'NORTH': (-1, 0),
+       'EAST': (0, 1),
+       'SOUTH': (1, 0),
+       'WEST': (0, -1)}
 
 class TavernTile:
     def __init__(self):
