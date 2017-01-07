@@ -158,3 +158,16 @@ def parse_pos(pos):
     else:
         return "(" + str(pos['x']) + "," + str(pos['y']) + ")"
 
+def get_order_lowest_value(game):
+    orders = dict()
+    num_fries = 999
+    num_burger = 999
+    id = -1
+    for customer in game.customers:
+        if(customer.french_fries < num_fries) and (customer.burger < num_burger):
+            num_fries = customer.french_fries
+            num_burger = customer.burger
+            id = customer.id
+
+    return id, num_fries, num_burger
+
