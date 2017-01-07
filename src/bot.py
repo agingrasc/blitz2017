@@ -140,6 +140,7 @@ class SimpleBot(Bot):
                 or (self.hero_health == 100):
             print("drink acquired")
             self.drink_loc = None
+            self.min_heal -= (100 - self.hero_health)
             self.next_state = self.state_before_heal
 
         return direction
