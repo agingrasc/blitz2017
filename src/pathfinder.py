@@ -9,22 +9,27 @@ class Pathfinder:
         self.game = game
 
     def get_closest_fries(self, reference_pos):
-        return self.get_closest(reference_pos, self.game.fries_locs)
+        return self.get_closest(reference_pos, self.game.fries_locs.keys())
 
     def get_closest_burger(self, reference_pos):
-        return self.get_closest(reference_pos, self.game.burger_locs)
+        return self.get_closest(reference_pos, self.game.burger_locs.keys())
 
-    def get_closest(self, reference_pos, objects):
+    def get_closest_customer(self, reference_pos):
+        return self.get_closest(reference_pos, self.game.customers_locs)
+
+    def get_closest_drink(self, reference_pos):
+        return self.get_closest(reference_pos, self.game.taverns_locs)
+
+    def get_closest(self, reference_pos, objects_positions):
         assert len(reference_pos) == 2
-        assert isinstance(objects, dict)
 
         minimum_distance = math.inf
         closest = None
-        for object_position in objects.keys():
-            distance = self.get_distance(reference_pos, object_position)
+        for position in objects_positions:
+            distance = self.get_distance(reference_pos, position)
             if distance < minimum_distance:
                 minimum_distance = distance
-                closest = objects[object_position]
+                closest = self.game.board.tiles[position[0]][position[1]]
         return closest, minimum_distance
 
     def get_distance(self, pos1, pos2):
