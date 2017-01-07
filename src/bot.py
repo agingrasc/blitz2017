@@ -32,6 +32,7 @@ class SimpleBot(Bot):
         self.burger_loc = None
         self.drink_loc = None
         self.pathfinder = None
+        self.min_heal = 30
 
     def init(self):
         self.next_state = self.get_fries
@@ -46,7 +47,7 @@ class SimpleBot(Bot):
             _, self.customer_loc = self.pathfinder.get_closest_customer(get_hero_pos(self.game))
             self.customer = get_customer_by_pos(self.customer_loc, self.game)
 
-        if get_hero_life(self.game) < 25:
+        if get_hero_life(self.game) < self.min_heal:
             print("Healing time! drink pos: {}".format(self.drink_loc))
             if self.next_state != self.heal:
                 self.state_before_heal = self.next_state
@@ -162,7 +163,6 @@ def get_hero_pos(game):
 
 def get_hero_life(game):
     return get_our_hero(game).life
-
 
 def get_our_hero(game):
     for hero in game.heroes:
