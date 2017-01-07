@@ -40,9 +40,9 @@ class SimpleBot(Bot):
         self.game = Game(state)
         self.pathfinder = Pathfinder(self.game)
         if self.customer is None:
+            print("Selecting customer")
             _, self.customer_loc = self.pathfinder.get_closest_customer(get_hero_pos(self.game))
             self.customer = get_customer_by_pos(self.customer_loc, self.game)
-            print("Customer: {} -- customer loc: {}".format(self.customer, self.customer_loc))
         return self.next_state()
 
     def get_fries(self):
@@ -51,7 +51,6 @@ class SimpleBot(Bot):
             print("Choosing new fries")
             fries_tile, self.fries_loc = self.pathfinder.get_closest_fries(get_hero_pos(
                 self.game))
-            print("Fries tile id owner: {} -- fries location: {}".format(fries_tile.hero_id, self.fries_loc))
 
         client_fries = self.customer.french_fries
         hero_fries = get_hero_fries(self.game)
@@ -59,8 +58,6 @@ class SimpleBot(Bot):
         direction = get_direction(self.game, self.fries_loc)
         hero_loc = get_hero_pos(self.game)
 
-        print(type(self.fries_loc))
-        print(hero_loc)
         if self.pathfinder.get_distance(self.fries_loc, hero_loc) <= 1:
             print("Fries acquired")
             self.fries_loc = None
@@ -70,8 +67,6 @@ class SimpleBot(Bot):
         else:
             self.next_state = self.get_fries
 
-        print('hero pos: ' + str(parse_pos(get_hero_pos(self.game))))
-        print('getting fries: ' + str(self.fries_loc))
         return direction
 
     def get_burgers(self):
@@ -80,7 +75,6 @@ class SimpleBot(Bot):
             print("Choosing new burger")
             burger_tile, self.burger_loc = \
                 self.pathfinder.get_closest_burger(get_hero_pos(self.game))
-            print("Burger tile id owner: {} -- burger location: {}".format(burger_tile.hero_id, self.burger_loc))
 
         client_burgers = self.customer.burger
         hero_burgers = get_hero_burgers(self.game)
