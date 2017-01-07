@@ -58,6 +58,11 @@ def get_size(state):
 def parse_pos(pos):
     return "(" + str(pos['x']) + "," + str(pos['y']) + ")"
 
+def get_client_pos(game, customer):
+    client_index = get_client_string_index(game, customer)
+    [row, col] = client_index_to_pose(game, client_index)
+    return [row, col]
+
 def get_client_string_index(game, customer):
     map = game.state['board']['tiles']
     start_index = 0
@@ -65,9 +70,8 @@ def get_client_string_index(game, customer):
         client_index = map.index('C', start_index)
         if map[client_index+1] == customer.id:
             return client_index
-        else
+        else:
             start_index = client_index
-
 
 def client_index_to_pose(game, client_index):
     [row, col] = get_size(game.state)
