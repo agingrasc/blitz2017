@@ -141,6 +141,8 @@ class SimpleBot(Bot):
             print("drink acquired")
             self.drink_loc = None
             self.min_heal -= (100 - self.hero_health)
+            if self.min_heal < 30:
+                self.min_heal = 30
             self.next_state = self.state_before_heal
 
         return direction
