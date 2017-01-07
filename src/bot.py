@@ -27,8 +27,10 @@ class SimpleBot(Bot):
         self.customer_loc = None
         self.game = None
         self.next_state = self.init
+        self.state_before_heal = self.init
         self.fries_loc = None
         self.burger_loc = None
+        self.drink_loc = None
         self.pathfinder = None
 
     def init(self):
@@ -43,6 +45,14 @@ class SimpleBot(Bot):
             print("Selecting customer")
             _, self.customer_loc = self.pathfinder.get_closest_customer(get_hero_pos(self.game))
             self.customer = get_customer_by_pos(self.customer_loc, self.game)
+
+        if get_hero_life(self.game) < 25:
+            print("Healing time! drink pos: {}".format(self.drink_loc))
+            if self.next_state != self.heal:
+                self.state_before_heal = self.next_state
+                print(str(self.state_before_heal))
+            self.next_state = self.heal
+
         return self.next_state()
 
     def get_fries(self):
@@ -96,8 +106,20 @@ class SimpleBot(Bot):
 
         return direction
 
-    def goto_customer(self):
+    def heal(self):
+        hero_loc = get_hero_pos(self.game)
+        if self.drink_loc is None:
+            drink_tile, self.drink_loc = self.pathfinder.get_closest_drink(hero_loc)
+        direction = get_direction(self.game, self.drink_loc)
 
+        if self.pathfinder.get_distance(self.drink_loc, hero_loc) <= 1:
+            print("drink acquired")
+            self.next_state = self.state_before_heal
+
+        return direction
+
+
+    def goto_customer(self):
         direction = get_direction(self.game, self.customer_loc)
         hero_loc = get_hero_pos(self.game)
         if self.pathfinder.get_distance(self.customer_loc, hero_loc) <= 1:
@@ -139,6 +161,10 @@ def get_hero_burgers(game):
 def get_hero_pos(game):
     pos = get_our_hero(game).pos
     return pos['x'], pos['y']
+
+def get_hero_life(game):
+    return get_our_hero(game).life
+
 
 def get_our_hero(game):
     for hero in game.heroes:
