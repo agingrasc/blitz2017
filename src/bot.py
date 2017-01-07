@@ -174,6 +174,7 @@ class SimpleBot(Bot):
             row, col = destination
             tile = self.game.board.tiles[row][col]
 
+            print("Direction choisi: {} -- opportunite: {}".format(type(direction), type(dir)))
             if direction != dir and (isinstance(tile, FriesTile) or isinstance(tile, BurgerTile)):
                 print(type(tile.hero_id))
                 print(type(get_our_hero_id(self.game)))
