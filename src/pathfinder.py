@@ -1,7 +1,7 @@
 from game import Game, TAVERN, TavernTile
 import math
 
-def get_our_hero_id(self, game):
+def get_our_hero_id(game):
         for hero in game.heroes:
             if hero.name == "Natural 20":
                 return hero.id
