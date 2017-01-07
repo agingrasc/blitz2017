@@ -124,6 +124,8 @@ class Hero:
         self.pos = hero['pos']
         self.life = hero['life']
         self.calories = hero['calories']
+        self.fries = hero['frenchFriesCount']
+        self.burgers = hero['burgerCount']
 
 
 class Customer:
