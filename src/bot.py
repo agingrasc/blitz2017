@@ -3,6 +3,7 @@ import json
 from random import choice
 from game import Game
 from pathfinder import Pathfinder, get_our_hero_id
+from game import TAVERN, AIR, WALL, SPIKE, FriesTile, BurgerTile
 
 URL = "http://game.blitz.codes:8081/pathfinding/direction"
 HERO_NAME = "Natural 20"
@@ -55,6 +56,7 @@ class SimpleBot(Bot):
             self.customer = get_customer_by_pos(self.customer_loc, self.game)
 
         # Override pour aller se soigner
+
         if get_hero_life(self.game) < 25:
             if self.next_state != self.heal:
                 self.state_before_heal = self.next_state
@@ -79,6 +81,10 @@ class SimpleBot(Bot):
         hero_fries = get_hero_fries(self.game)
 
         direction = get_direction(self.game, self.fries_loc)
+        opportunity_direction = self.check_for_opportunity(direction)
+        if opportunity_direction:
+            return opportunity_direction
+
         hero_loc = get_hero_pos(self.game)
 
         if self.pathfinder.get_distance(self.fries_loc, hero_loc) <= 1:
@@ -104,6 +110,9 @@ class SimpleBot(Bot):
         hero_loc = get_hero_pos(self.game)
 
         direction = get_direction(self.game, self.burger_loc)
+        opportunity_direction = self.check_for_opportunity(direction)
+        if opportunity_direction:
+            return opportunity_direction
 
         if self.pathfinder.get_distance(self.burger_loc, hero_loc) <= 1:
             print("Burger acquired")
@@ -142,6 +151,22 @@ class SimpleBot(Bot):
             self.next_state = self.get_fries
 
         return direction
+
+    def check_for_opportunity(self, direction):
+        cardinal_directions = ['WEST', 'EAST', 'NORTH', 'SOUTH']
+        hero_loc = get_hero_pos(self.game)
+
+        for dir in cardinal_directions:
+            destination = self.game.board.to(hero_loc, direction)
+            row, col = destination
+            tile = self.game.board.tiles[row][col]
+
+            if direction != dir and (isinstance(tile, FriesTile) or isinstance(tile, BurgerTile)):
+                print(type(tile.hero_id))
+                print(type(get_our_hero_id(self.game)))
+                if tile.hero_id != get_our_hero_id(self.game):
+                    return dir
+
 
 
 def get_direction(game, destination, service=True):
