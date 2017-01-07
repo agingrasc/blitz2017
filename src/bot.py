@@ -43,6 +43,9 @@ class SimpleBot(Bot):
             _, self.customer_loc = self.pathfinder.get_closest_customer(get_hero_pos(self.game))
             self.customer = get_customer_by_pos(self.customer_loc, self.game)
             print("Customer: {} -- customer loc: {}".format(self.customer, self.customer_loc))
+        if get_hero_life(self.game) < 25:
+            self.next_state = self.heal
+
         return self.next_state()
 
     def get_fries(self):
@@ -99,8 +102,19 @@ class SimpleBot(Bot):
 
         return direction
 
-    def goto_customer(self):
+    def heal(self):
+        hero_loc = get_hero_pos(self.game)
+        drink_loc = self.pathfinder.get_closest_drink(hero_loc)
+        direction = get_direction(self.game, drink_loc)
+        if self.pathfinder.get_distance(self.customer_loc, hero_loc) <= 1:
+            self.customer = None
+            self.customer_loc = None
+            self.next_state = self.get_fries
 
+        return direction
+
+
+    def goto_customer(self):
         direction = get_direction(self.game, self.customer_loc)
         hero_loc = get_hero_pos(self.game)
         if self.pathfinder.get_distance(self.customer_loc, hero_loc) <= 1:
@@ -142,6 +156,10 @@ def get_hero_burgers(game):
 def get_hero_pos(game):
     pos = get_our_hero(game).pos
     return pos['x'], pos['y']
+
+def get_hero_life(game):
+    return get_our_hero(game).life
+
 
 def get_our_hero(game):
     for hero in game.heroes:
