@@ -70,7 +70,7 @@ class SimpleBot(Bot):
         if self.hero_health == 0:
             self.num_death += 1
             self.next_state = self.init
-        elif self.hero_health < self.min_heal:
+        elif (get_our_hero(self.game).calories > 30) and (self.hero_health < self.min_heal):
             if self.next_state != self.heal:
                 self.state_before_heal = self.next_state
             self.next_state = self.heal
@@ -140,6 +140,11 @@ class SimpleBot(Bot):
         return direction
 
     def heal(self):
+        # Check si on a les calories pour guerir
+        if (get_our_hero(self.game).calories <= 30):
+            self.next_state = self.state_before_heal
+            return 'STAY'
+
         hero_loc = get_hero_pos(self.game)
         if self.drink_loc is None:
             drink_tile, self.drink_loc = self.pathfinder.get_closest_drink(hero_loc)
