@@ -100,8 +100,8 @@ class SimpleBot(Bot):
         return direction
 
     def heal(self):
+        hero_loc = get_hero_pos(self.game)
         if self.drink_loc is None:
-            hero_loc = get_hero_pos(self.game)
             drink_tile, self.drink_loc = self.pathfinder.get_closest_drink(hero_loc)
         direction = get_direction(self.game, self.drink_loc)
 
