@@ -64,6 +64,7 @@ class SimpleBot(Bot):
 
         # Reset de mort
         if get_hero_life(self.game) == 0:
+            self.num_death += 1
             self.next_state = self.init
 
         # Override pour aller se soigner
@@ -134,7 +135,7 @@ class SimpleBot(Bot):
 
         print("Healing time! drink pos: {}".format(self.drink_loc))
         if (self.pathfinder.get_distance(self.drink_loc, hero_loc) <= 1) \
-                or (get_hero_life(game) == 100):
+                or (get_hero_life(self.game) == 100):
             print("drink acquired")
             self.drink_loc = None
             self.next_state = self.state_before_heal
