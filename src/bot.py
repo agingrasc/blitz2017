@@ -2,7 +2,7 @@ import requests
 import json
 from random import choice
 from game import Game
-from pathfinder import Pathfinder
+from pathfinder import Pathfinder, get_our_hero_id
 
 URL = "http://game.blitz.codes:8081/pathfinding/direction"
 HERO_NAME = "Natural 20"
@@ -37,27 +37,43 @@ class SimpleBot(Bot):
 
     def init(self):
         self.next_state = self.get_fries
-        self.customer = choice(self.game.customers)
+        self.state_before_heal = self.get_fries
+        self.customer = None
+        self.customer_loc = None
+        self.fries_loc = None
+        self.drink_loc = None
+        self.pathfinder = None
+
         return 'Stay'
 
     def exec(self, state):
         self.game = Game(state)
         self.pathfinder = Pathfinder(self.game)
+
+        # Choix d'un nouveau client
         if self.customer is None:
             print("Selecting customer")
             _, self.customer_loc = self.pathfinder.get_closest_customer(get_hero_pos(self.game))
             self.customer = get_customer_by_pos(self.customer_loc, self.game)
-        if get_hero_life(self.game) < self.min_heal:
-            print("Healing time! drink pos: {}".format(self.drink_loc))
+
+        if (self.num_death >= 5) and (self.min_heal <= 45):
+            self.min_heal += 5
+            self.num_death = 0
+
+        destination = self.next_state()
+
+        # Reset de mort
+        if get_hero_life(self.game) == 0:
+            self.next_state = self.init
+
+        # Override pour aller se soigner
+        elif get_hero_life(self.game) < self.min_heal:
             if self.next_state != self.heal:
                 self.state_before_heal = self.next_state
                 print(str(self.state_before_heal))
             self.next_state = self.heal
-        if (self.num_death >= 5) and (self.min_heal <= 45):
-            self.min_heal += 5
-            self.num_death = 0
-            
-        return self.next_state()
+
+        return destination
 
     def get_fries(self):
 
@@ -117,7 +133,8 @@ class SimpleBot(Bot):
         direction = get_direction(self.game, self.drink_loc)
 
         print("Healing time! drink pos: {}".format(self.drink_loc))
-        if self.pathfinder.get_distance(self.drink_loc, hero_loc) <= 1:
+        if (self.pathfinder.get_distance(self.drink_loc, hero_loc) <= 1) \
+                or (get_hero_life(game) == 100):
             print("drink acquired")
             self.drink_loc = None
             self.next_state = self.state_before_heal
@@ -188,17 +205,26 @@ def parse_pos(pos):
         return "(" + str(pos['x']) + "," + str(pos['y']) + ")"
 
 def get_order_lowest_value(game):
-    orders = dict()
     num_fries = 999
     num_burger = 999
     id = -1
     for customer in game.customers:
-        if(customer.french_fries < num_fries) and (customer.burger < num_burger):
+        if(customer.french_fries <= num_fries) and (customer.burger <= num_burger):
             num_fries = customer.french_fries
             num_burger = customer.burger
             id = customer.id
-
     return id, num_fries, num_burger
+
+def get_order_highest_value(game):
+    num_fries = 0
+    num_burgers = 0
+    id = -1
+    for customer in game.customers:
+        if(customer.french_fries >= num_fries) and (customer.burger >= num_burgers):
+            num_fries = customer.french_fries
+            num_burgers = customer.burger
+            id = customer.id
+    return id, num_fries, num_burgers
 
 def get_customer_by_pos(pos, game):
     state = game.state
@@ -214,3 +240,14 @@ def get_customer_by_pos(pos, game):
         if customer.id == customer_id:
             return customer
 
+def get_hero_with_most_food(game):
+    num_fries = 0
+    num_burgers = 0
+    id = -1
+    our_id = get_our_hero_id(game)
+    for hero in game.heroes:
+        if (hero.id != our_id) and (hero.fries >= num_fries) and (hero.burger >= num_burgers):
+            num_fries = hero.french_fries
+            num_burgers = hero.burger
+            id = hero.id
+    return id, num_fries, num_burgers

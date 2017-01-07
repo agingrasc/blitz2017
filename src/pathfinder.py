@@ -1,13 +1,17 @@
 from game import Game, TAVERN, TavernTile
 import math
 
+def get_our_hero_id(self, game):
+        for hero in game.heroes:
+            if hero.name == "Natural 20":
+                return hero.id
 
 class Pathfinder:
 
     def __init__(self, game):
         assert isinstance(game, Game)
         self.game = game
-        self.our_hero_id = self._get_our_hero_id()
+        self.our_hero_id = get_our_hero_id(self.game)
 
     def get_closest_fries(self, reference_pos):
         return self.get_closest(reference_pos, self._get_free_food(self.game.fries_locs))
@@ -38,11 +42,6 @@ class Pathfinder:
 
     def get_distance(self, pos1, pos2):
         return math.fabs(pos2[0] - pos1[0]) + math.fabs(pos2[1] - pos1[1])
-
-    def _get_our_hero_id(self):
-        for hero in self.game.heroes:
-            if hero.name == "Natural 20":
-                return hero.id
 
     def _get_free_food(self, food_dict):
         food_positions = []
