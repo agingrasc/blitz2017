@@ -42,7 +42,7 @@ class SimpleBot(Bot):
         self.drink_loc = None
         self.pathfinder = None
 
-        return self.get_fries()
+        return 'Stay'
 
     def exec(self, state):
         self.game = Game(state)
