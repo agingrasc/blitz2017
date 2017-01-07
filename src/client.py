@@ -3,7 +3,7 @@
 import sys
 import requests
 
-from bot import RandomBot
+from bot import RandomBot, SimpleBot
 
 TIMEOUT = 15
 BASE_URL = "http://game.blitz.codes:8080"
@@ -129,7 +129,8 @@ def main():
         if mode != "training" and mode != "competition":
             print("Invalid game mode. Please use 'training' or 'competition'.")
         else:
-            start(BASE_URL, key, mode, game_id, RandomBot())
+            #TODO: place pour changer le bot
+            start(BASE_URL, key, mode, game_id, SimpleBot())
             print("\nGame finished!")
 
 
