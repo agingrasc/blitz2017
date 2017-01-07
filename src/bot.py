@@ -111,7 +111,7 @@ class SimpleBot(Bot):
 
         if self.pathfinder.get_distance(self.drink_loc, hero_loc) <= 1:
             print("drink acquired")
-            self.next_state = self.get_fries
+            self.next_state = self.state_before_heal
 
         return direction
 
