@@ -16,20 +16,26 @@ AIM = {'North': (-1, 0),
        'South': (1, 0),
        'West': (0, -1)}
 
+class TavernTile:
+    def __init__(self):
+        self.pos = None
 
 class HeroTile:
     def __init__(self, id):
         self.id = id
+        self.pos = None
 
 
 class FriesTile:
     def __init__(self, hero_id=None):
         self.hero_id = hero_id
+        self.pos = None
 
 
 class BurgerTile:
     def __init__(self, hero_id=None):
         self.hero_id = hero_id
+        self.pos = None
 
 
 class Game:

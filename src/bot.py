@@ -47,9 +47,11 @@ class SimpleBot(Bot):
     def get_fries(self):
 
         if self.fries_loc is None:
-            print("choosing new fries")
-            self.fries_loc = choice(list(self.game.fries_locs.keys()))
-            print(type(self.fries_loc))
+            print("Choosing new fries")
+            fries_tile = self.pathfinder.get_closest_fries(get_hero_pos(
+                self.game))
+            _ , self.fries_loc = fries_tile
+            print(self.fries_loc)
 
         client_fries = self.customer.french_fries
         hero_fries = get_hero_fries(self.game)
@@ -178,3 +180,4 @@ def get_order_lowest_value(game):
             id = customer.id
 
     return id, num_fries, num_burger
+
