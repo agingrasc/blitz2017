@@ -101,7 +101,6 @@ def start(server_url, key, mode, game_id, bot):
 
     while not is_finished(state):
         # Choose a move
-        #TODO: change move logic
         direction = bot.exec(state)
         sys.stdout.write("Going to {}.\n".format(direction))
         sys.stdout.flush()

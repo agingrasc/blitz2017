@@ -2,6 +2,7 @@ import requests
 import json
 from random import choice
 from game import Game
+from pathfinder import Pathfinder
 
 URL = "http://game.blitz.codes:8081/pathfinding/direction"
 HERO_NAME = "Natural 20"
@@ -11,6 +12,9 @@ class Bot:
 
 
 class RandomBot(Bot):
+    def exec(self, state):
+        return self.move(state)
+
     def move(self, state):
         game = Game(state)
         dirs = ['Stay', 'North', 'South', 'East', 'West']
@@ -24,6 +28,9 @@ class SimpleBot(Bot):
         self.next_state = self.init
         self.attempted_loc = None
         self.attempted_loc_idx = 0
+        self.fries_loc = None
+        self.burger_loc = None
+        self.pathfinder = None
 
     def init(self):
         self.next_state = self.get_fries
@@ -32,49 +39,75 @@ class SimpleBot(Bot):
 
     def exec(self, state):
         self.game = Game(state)
+        self.pathfinder = Pathfinder(self.game)
         if self.customer is None:
             self.customer = choice(self.game.customers)
         return self.next_state()
 
     def get_fries(self):
 
+        if self.fries_loc is None:
+            print("choosing new fries")
+            self.fries_loc = choice(list(self.game.fries_locs.keys()))
+            print(type(self.fries_loc))
+
         client_fries = self.customer.french_fries
         hero_fries = get_hero_fries(self.game)
-        fries_loc = choice(list(self.game.fries_locs.keys()))
+
+        direction = get_direction(self.game, self.fries_loc)
+        hero_loc = get_hero_pos(self.game)
+
+        print(type(self.fries_loc))
+        print(hero_loc)
+        if self.pathfinder.get_distance(self.fries_loc, hero_loc) <= 1:
+            print("Fries acquired")
+            self.fries_loc = None
 
         if hero_fries >= client_fries:
             self.next_state = self.get_burgers
         else:
             self.next_state = self.get_fries
 
-        print('getting fries: ' + str(fries_loc))
-        return get_direction(self.game, fries_loc)
+        print('hero pos: ' + str(parse_pos(get_hero_pos(self.game))))
+        print('getting fries: ' + str(self.fries_loc))
+        return direction
 
     def get_burgers(self):
 
+        if self.burger_loc is None:
+            print("choosing new fries")
+            self.burger_loc = choice(list(self.game.burger_locs.keys()))
+            print(type(self.burger_loc))
+
         client_burgers = self.customer.burger
         hero_burgers = get_hero_burgers(self.game)
-        burger_loc = choice(self.game.burger_locs.values())
+        hero_loc = get_hero_pos(self.game)
+
+        direction = get_direction(self.game, self.burger_loc)
+
+        if self.pathfinder.get_distance(self.burger_loc, hero_loc) <= 1:
+            print("Burger acquired")
+            self.burger_loc = None
 
         if hero_burgers >= client_burgers:
             self.next_state = self.goto_customer
         else:
             self.next_state = self.get_burgers
 
-        return get_direction(self.game, burger_loc)
+        return direction
 
     def goto_customer(self):
 
         if self.attempted_loc is None:
             self.attempted_loc_idx = 0
-            self.attempted_loc = list(self.game.customers_locs.values())[
+            self.attempted_loc = list(self.game.customers_locs)[
                 self.attempted_loc_idx]
             self.attempted_loc_idx += 1
 
         direction = get_direction(self.game, self.attempted_loc)
-        if direction == 'Stay' or 'STAY' and self.attempted_loc_idx < len(
-                self.game.customers_loc):
-            self.attempted_loc = list(self.game.customers_locs.values())[
+        hero_loc = get_hero_pos(self.game)
+        if self.pathfinder.get_distance(self.attempted_loc, hero_loc) <= 1:
+            self.attempted_loc = list(self.game.customers_locs)[
                 self.attempted_loc_idx]
             self.attempted_loc_idx += 1
         elif self.attempted_loc_idx >= len(self.game.customers_locs):
@@ -88,16 +121,14 @@ class SimpleBot(Bot):
 def get_direction(game, destination, service=True):
     if service:
         try:
-            print(destination)
-            hero_pos = get_hero_pos(game)
+            hero_pos = parse_pos(get_hero_pos(game))
             payload = {'map': game.state['game']['board']['tiles'],
                        'size': get_size(game.state),
-                       'start': parse_pos(hero_pos),
-                       'end': destination}
+                       'start': hero_pos,
+                       'target': parse_pos(destination)}
             r = requests.get(URL, params=payload)
 
             if r.status_code == 200:
-                print("direction: " + r.json()['direction'])
                 return r.json()['direction']
             else:
                 print("Error HTTP %d\n%s\n" % (r.status_code, r.text))
@@ -116,7 +147,8 @@ def get_hero_burgers(game):
     return get_our_hero(game).burgers
 
 def get_hero_pos(game):
-    return get_our_hero(game).pos
+    pos = get_our_hero(game).pos
+    return pos['x'], pos['y']
 
 def get_our_hero(game):
     for hero in game.heroes:
@@ -128,4 +160,8 @@ def get_size(state):
     return state['game']['board']['size']
 
 def parse_pos(pos):
-    return "(" + str(pos['x']) + "," + str(pos['y']) + ")"
+    if type(pos) is tuple:
+        x, y = pos
+        return "(" + str(x) + "," + str(y) + ")"
+    else:
+        return "(" + str(pos['x']) + "," + str(pos['y']) + ")"
