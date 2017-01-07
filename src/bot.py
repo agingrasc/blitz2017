@@ -88,14 +88,6 @@ class SimpleBot(Bot):
         hero_fries = get_hero_fries(self.game)
 
         direction = get_direction(self.game, self.fries_loc)
-
-        # Opportunity move
-        opportunity_direction = self.check_for_opportunity(direction)
-        if opportunity_direction:
-            print("Opportuniy: {}".format(opportunity_direction))
-            self.next_state = self.opportunity
-            return opportunity_direction
-
         hero_loc = get_hero_pos(self.game)
 
         if self.pathfinder.get_distance(self.fries_loc, hero_loc) <= 1:
@@ -121,13 +113,6 @@ class SimpleBot(Bot):
         hero_loc = get_hero_pos(self.game)
 
         direction = get_direction(self.game, self.burger_loc)
-
-        # Opportuniy move
-        opportunity_direction = self.check_for_opportunity(direction)
-        if opportunity_direction:
-            print("Opportuniy: {}".format(opportunity_direction))
-            self.next_state = self.opportunity
-            return opportunity_direction
 
         if self.pathfinder.get_distance(self.burger_loc, hero_loc) <= 1:
             print("Burger acquired")
