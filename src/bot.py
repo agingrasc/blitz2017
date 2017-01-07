@@ -47,9 +47,11 @@ class SimpleBot(Bot):
     def get_fries(self):
 
         if self.fries_loc is None:
-            print("choosing new fries")
-            self.fries_loc = choice(list(self.game.fries_locs.keys()))
-            print(type(self.fries_loc))
+            print("Choosing new fries")
+            fries_tile = self.pathfinder.get_closest_fries(get_hero_pos(
+                self.game))
+            _ , self.fries_loc = fries_tile
+            print(self.fries_loc)
 
         client_fries = self.customer.french_fries
         hero_fries = get_hero_fries(self.game)
@@ -165,3 +167,4 @@ def parse_pos(pos):
         return "(" + str(x) + "," + str(y) + ")"
     else:
         return "(" + str(pos['x']) + "," + str(pos['y']) + ")"
+

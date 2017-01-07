@@ -1,4 +1,4 @@
-from game import Game
+from game import Game, TAVERN, TavernTile
 import math
 
 
@@ -30,7 +30,11 @@ class Pathfinder:
             if distance < minimum_distance:
                 minimum_distance = distance
                 closest = self.game.board.tiles[position[0]][position[1]]
-        return closest, minimum_distance
+                if closest == TAVERN:
+                    closest = TavernTile()
+                closest.pos = position
+
+        return closest, position
 
     def get_distance(self, pos1, pos2):
         return math.fabs(pos2[0] - pos1[0]) + math.fabs(pos2[1] - pos1[1])
