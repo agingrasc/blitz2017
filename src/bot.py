@@ -48,8 +48,9 @@ class SimpleBot(Bot):
 
         if get_hero_life(self.game) < 25:
             print("Healing time! drink pos: {}".format(self.drink_loc))
-            if self.next_state != self.heal :
+            if self.next_state != self.heal:
                 self.state_before_heal = self.next_state
+                print(str(self.state_before_heal))
             self.next_state = self.heal
 
         return self.next_state()
