@@ -2,7 +2,7 @@ import requests
 import json
 from random import choice
 from game import Game
-from pathfinder import Pathfinder
+from pathfinder import Pathfinder, get_our_hero_id
 
 URL = "http://game.blitz.codes:8081/pathfinding/direction"
 HERO_NAME = "Natural 20"
@@ -175,17 +175,26 @@ def parse_pos(pos):
         return "(" + str(pos['x']) + "," + str(pos['y']) + ")"
 
 def get_order_lowest_value(game):
-    orders = dict()
     num_fries = 999
     num_burger = 999
     id = -1
     for customer in game.customers:
-        if(customer.french_fries < num_fries) and (customer.burger < num_burger):
+        if(customer.french_fries <= num_fries) and (customer.burger <= num_burger):
             num_fries = customer.french_fries
             num_burger = customer.burger
             id = customer.id
-
     return id, num_fries, num_burger
+
+def get_order_highest_value(game):
+    num_fries = 0
+    num_burgers = 0
+    id = -1
+    for customer in game.customers:
+        if(customer.french_fries >= num_fries) and (customer.burger >= num_burgers):
+            num_fries = customer.french_fries
+            num_burgers = customer.burger
+            id = customer.id
+    return id, num_fries, num_burgers
 
 def get_customer_by_pos(pos, game):
     state = game.state
@@ -201,3 +210,14 @@ def get_customer_by_pos(pos, game):
         if customer.id == customer_id:
             return customer
 
+def get_hero_with_most_food(game):
+    num_fries = 0
+    num_burgers = 0
+    id = -1
+    our_id = get_our_hero_id(game)
+    for hero in game.heroes:
+        if (hero.id != our_id) and (hero.fries >= num_fries) and (hero.burger >= num_burgers):
+            num_fries = hero.french_fries
+            num_burgers = hero.burger
+            id = hero.id
+    return id, num_fries, num_burgers
