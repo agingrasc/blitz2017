@@ -32,9 +32,6 @@ class Pathfinder:
                 minimum_distance = distance
                 closest_object = self.game.board.tiles[position[0]][position[1]]
                 closest_position = position
-                if closest_object == TAVERN:
-                    closest_object = TavernTile()
-                closest_object.pos = position
 
         return closest_object, closest_position
 

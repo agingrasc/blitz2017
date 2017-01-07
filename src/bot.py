@@ -105,7 +105,7 @@ class SimpleBot(Bot):
         if self.pathfinder.get_distance(self.customer_loc, hero_loc) <= 1:
             self.customer = None
             self.customer_loc = None
-            self.get_fries()
+            self.next_state = self.get_fries
 
         return direction
 

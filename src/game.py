@@ -132,6 +132,7 @@ class Hero:
         self.calories = hero['calories']
         self.fries = hero['frenchFriesCount']
         self.burgers = hero['burgerCount']
+        self.id = hero['id']
 
 
 class Customer:
