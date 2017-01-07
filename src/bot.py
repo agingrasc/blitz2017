@@ -47,7 +47,6 @@ class SimpleBot(Bot):
             self.customer = get_customer_by_pos(self.customer_loc, self.game)
 
         if get_hero_life(self.game) < 25:
-            print("Healing time! drink pos: {}".format(self.drink_loc))
             if self.next_state != self.heal:
                 self.state_before_heal = self.next_state
                 print(str(self.state_before_heal))
@@ -107,12 +106,12 @@ class SimpleBot(Bot):
         return direction
 
     def heal(self):
-        print("Healing")
         hero_loc = get_hero_pos(self.game)
         if self.drink_loc is None:
             drink_tile, self.drink_loc = self.pathfinder.get_closest_drink(hero_loc)
         direction = get_direction(self.game, self.drink_loc)
 
+        print("Healing time! drink pos: {}".format(self.drink_loc))
         if self.pathfinder.get_distance(self.drink_loc, hero_loc) <= 1:
             print("drink acquired")
             self.next_state = self.state_before_heal
