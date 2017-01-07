@@ -100,13 +100,14 @@ class SimpleBot(Bot):
             if get_hero_fries(self.game) >= self.customer.french_fries:
                 self.next_state = self.goto_customer
             else:
-                self.next_state = self.get_fries(self.game)
+                self.next_state = self.get_fries
         else:
             self.next_state = self.get_burgers
 
         return direction
 
     def heal(self):
+        print("Healing")
         hero_loc = get_hero_pos(self.game)
         if self.drink_loc is None:
             drink_tile, self.drink_loc = self.pathfinder.get_closest_drink(hero_loc)
