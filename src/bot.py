@@ -41,9 +41,9 @@ class SimpleBot(Bot):
         self.game = Game(state)
         self.pathfinder = Pathfinder(self.game)
         if self.customer is None:
+            print("Selecting customer")
             _, self.customer_loc = self.pathfinder.get_closest_customer(get_hero_pos(self.game))
             self.customer = get_customer_by_pos(self.customer_loc, self.game)
-            print("Customer: {} -- customer loc: {}".format(self.customer, self.customer_loc))
         if get_hero_life(self.game) < 25:
             self.next_state = self.heal
 
@@ -62,8 +62,6 @@ class SimpleBot(Bot):
         direction = get_direction(self.game, self.fries_loc)
         hero_loc = get_hero_pos(self.game)
 
-        print(type(self.fries_loc))
-        print(hero_loc)
         if self.pathfinder.get_distance(self.fries_loc, hero_loc) <= 1:
             print("Fries acquired")
             self.fries_loc = None
