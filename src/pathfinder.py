@@ -49,3 +49,4 @@ class Pathfinder:
         for food in food_dict.items():
             if food[1] != self.our_hero_id:
                 food_positions.append(food[0])
+        return food_positions
