@@ -52,7 +52,7 @@ class SimpleBot(Bot):
             fries_tile = self.pathfinder.get_closest_fries(get_hero_pos(
                 self.game))
             _ , self.fries_loc = fries_tile
-            print("Fries tile: {} -- fries location: {}".format(fries_tile, self.fries_loc))
+            print("Fries tile id owner: {} -- fries location: {}".format(fries_tile.hero_id, self.fries_loc))
 
         client_fries = self.customer.french_fries
         hero_fries = get_hero_fries(self.game)
@@ -81,7 +81,7 @@ class SimpleBot(Bot):
             print("Choosing new burger")
             burger_tile, self.burger_loc = \
                 self.pathfinder.get_closest_burger(get_hero_pos(self.game))
-            print("Burger tile: {} -- burger location: {}".format(burger_tile, self.burger_loc))
+            print("Burger tile id owner: {} -- burger location: {}".format(burger_tile.hero_id, self.burger_loc))
 
         client_burgers = self.customer.burger
         hero_burgers = get_hero_burgers(self.game)
