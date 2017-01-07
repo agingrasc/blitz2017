@@ -93,7 +93,7 @@ class SimpleBot(Bot):
         opportunity_direction = self.check_for_opportunity(direction)
         if opportunity_direction:
             print("Opportuniy: {}".format(opportunity_direction))
-            self.next_state = self.init
+            self.next_state = self.opportunity
             return opportunity_direction
 
         hero_loc = get_hero_pos(self.game)
@@ -125,6 +125,8 @@ class SimpleBot(Bot):
         # Opportuniy move
         opportunity_direction = self.check_for_opportunity(direction)
         if opportunity_direction:
+            print("Opportuniy: {}".format(opportunity_direction))
+            self.next_state = self.opportunity
             return opportunity_direction
 
         if self.pathfinder.get_distance(self.burger_loc, hero_loc) <= 1:
@@ -174,6 +176,23 @@ class SimpleBot(Bot):
             self.next_state = self.get_fries
 
         return direction
+
+    def opportunity(self):
+        direction = self.check_for_opportunity('Stay')
+
+        # Transition d'etat
+        if get_hero_fries(self.game) < self.customer.french_fries:
+            self.next_state = self.get_fries
+        elif get_hero_burgers(self.game):
+            self.next_state = self.get_burgers
+        else:
+            self.next_state = self.goto_customer
+
+        # Retourne mouvement
+        if direction:
+            return direction
+        else:
+            return 'Stay'
 
     def check_for_opportunity(self, direction):
         cardinal_directions = ['WEST', 'EAST', 'NORTH', 'SOUTH']
