@@ -1,6 +1,6 @@
 from random import choice
-from game import Game
-
+from .game import Game
+from .state_machine import MoveState
 
 class Bot:
     pass
@@ -16,3 +16,11 @@ class SimplePathedBot(Bot):
     def move(self, state):
         game = Game(state)
         return ['Stay']
+
+class SimpleMoveBot(Bot):
+    def __init__(self):
+        self.dirState = MoveState
+
+    def move(self, state):
+        game = Game(state)
+        return list(self.dirState.get_dir())

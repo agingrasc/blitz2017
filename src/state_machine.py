@@ -6,7 +6,7 @@ class MoveState:
         self.current_state = new_state
 
     def get_dir(self):
-        raise NotImplementedError
+        pass
 
     def move(self):
         dir = self.current_state.get_dir()
