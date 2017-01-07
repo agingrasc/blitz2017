@@ -35,24 +35,38 @@ class SimpleBot(Bot):
 
     def init(self):
         self.next_state = self.get_fries
-        self.customer = choice(self.game.customers)
+        self.state_before_heal = self.get_fries
+        self.customer = None
+        self.customer_loc = None
+        self.fries_loc = None
+        self.drink_loc = None
+        self.pathfinder = None
+
         return 'Stay'
 
     def exec(self, state):
         self.game = Game(state)
         self.pathfinder = Pathfinder(self.game)
+
+        # Choix d'un nouveau client
         if self.customer is None:
             print("Selecting customer")
             _, self.customer_loc = self.pathfinder.get_closest_customer(get_hero_pos(self.game))
             self.customer = get_customer_by_pos(self.customer_loc, self.game)
 
+        # Override pour aller se soigner
         if get_hero_life(self.game) < 25:
             if self.next_state != self.heal:
                 self.state_before_heal = self.next_state
                 print(str(self.state_before_heal))
             self.next_state = self.heal
 
-        return self.next_state()
+        destination = self.next_state()
+
+        # Reset de mort
+        if get_hero_life(self.game) == 0:
+            self.next_state = self.init
+        return destination
 
     def get_fries(self):
 
