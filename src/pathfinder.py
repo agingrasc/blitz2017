@@ -48,7 +48,7 @@ class Pathfinder:
         print("Finding food not owned!")
         food_positions = []
         for food in food_dict.items():
-            print("Our hero id: {}".format(self.our_hero_id))
+            print("Our hero id: {} -- tile owner id: {}".format(self.our_hero_id, food[1]))
             if food[1] != self.our_hero_id:
                 food_positions.append(food[0])
         return food_positions
