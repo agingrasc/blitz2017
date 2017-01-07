@@ -29,6 +29,7 @@ class SimpleBot(Bot):
         self.next_state = self.init
         self.fries_loc = None
         self.burger_loc = None
+        self.drink_loc = None
         self.pathfinder = None
 
     def init(self):
@@ -103,12 +104,13 @@ class SimpleBot(Bot):
         return direction
 
     def heal(self):
-        hero_loc = get_hero_pos(self.game)
-        drink_loc = self.pathfinder.get_closest_drink(hero_loc)
-        direction = get_direction(self.game, drink_loc)
-        if self.pathfinder.get_distance(self.customer_loc, hero_loc) <= 1:
-            self.customer = None
-            self.customer_loc = None
+        if self.burger_loc is None:
+            hero_loc = get_hero_pos(self.game)
+            drink_tile, self.drink_loc = self.pathfinder.get_closest_drink(hero_loc)
+        direction = get_direction(self.game, self.drink_loc)
+
+        if self.pathfinder.get_distance(self.drink_loc, hero_loc) <= 1:
+            self.drink_loc = None
             self.next_state = self.get_fries
 
         return direction
