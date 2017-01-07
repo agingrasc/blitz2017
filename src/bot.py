@@ -33,6 +33,7 @@ class SimpleBot(Bot):
         self.drink_loc = None
         self.pathfinder = None
         self.min_heal = 30
+        self.num_death = 0
 
     def init(self):
         self.next_state = self.get_fries
@@ -52,7 +53,10 @@ class SimpleBot(Bot):
                 self.state_before_heal = self.next_state
                 print(str(self.state_before_heal))
             self.next_state = self.heal
-
+        if (self.num_death >= 5) and (self.min_heal <= 45):
+            self.min_heal += 5
+            self.num_death = 0
+            
         return self.next_state()
 
     def get_fries(self):
