@@ -33,6 +33,9 @@ class SimpleBot(Bot):
         self.burger_loc = None
         self.drink_loc = None
         self.pathfinder = None
+        self.min_heal = 30
+        self.num_death = 0
+        self.hero_health = 100
 
     def init(self):
         self.next_state = self.get_fries
@@ -55,19 +58,23 @@ class SimpleBot(Bot):
             _, self.customer_loc = self.pathfinder.get_closest_customer(get_hero_pos(self.game))
             self.customer = get_customer_by_pos(self.customer_loc, self.game)
 
-        # Override pour aller se soigner
-
-        if get_hero_life(self.game) < 25:
-            if self.next_state != self.heal:
-                self.state_before_heal = self.next_state
-                print(str(self.state_before_heal))
-            self.next_state = self.heal
+        if (self.num_death >= 5) and (self.min_heal <= 45):
+            self.min_heal += 5
+            self.num_death = 0
 
         destination = self.next_state()
 
-        # Reset de mort
-        if get_hero_life(self.game) == 0:
+        self.hero_health = get_hero_life(self.game)
+
+        # Reset de mort et check de healing
+        if self.hero_health == 0:
+            self.num_death += 1
             self.next_state = self.init
+        elif self.hero_health < self.min_heal:
+            if self.next_state != self.heal:
+                self.state_before_heal = self.next_state
+            self.next_state = self.heal
+
         return destination
 
     def get_fries(self):
@@ -81,6 +88,8 @@ class SimpleBot(Bot):
         hero_fries = get_hero_fries(self.game)
 
         direction = get_direction(self.game, self.fries_loc)
+
+        # Opportunity move
         opportunity_direction = self.check_for_opportunity(direction)
         if opportunity_direction:
             return opportunity_direction
@@ -110,6 +119,8 @@ class SimpleBot(Bot):
         hero_loc = get_hero_pos(self.game)
 
         direction = get_direction(self.game, self.burger_loc)
+
+        # Opportuniy move
         opportunity_direction = self.check_for_opportunity(direction)
         if opportunity_direction:
             return opportunity_direction
@@ -135,8 +146,10 @@ class SimpleBot(Bot):
         direction = get_direction(self.game, self.drink_loc)
 
         print("Healing time! drink pos: {}".format(self.drink_loc))
-        if self.pathfinder.get_distance(self.drink_loc, hero_loc) <= 1:
+        if (self.pathfinder.get_distance(self.drink_loc, hero_loc) <= 1) \
+                or (self.hero_health == 100):
             print("drink acquired")
+            self.drink_loc = None
             self.next_state = self.state_before_heal
 
         return direction
@@ -203,7 +216,6 @@ def get_hero_pos(game):
 
 def get_hero_life(game):
     return get_our_hero(game).life
-
 
 def get_our_hero(game):
     for hero in game.heroes:
