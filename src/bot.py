@@ -11,3 +11,8 @@ class RandomBot(Bot):
         game = Game(state)
         dirs = ['Stay', 'North', 'South', 'East', 'West']
         return choice(dirs)
+
+class SimplePathedBot(Bot):
+    def move(self, state):
+        game = Game(state)
+        return ['Stay']
