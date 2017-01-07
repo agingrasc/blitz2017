@@ -41,6 +41,7 @@ class SimpleBot(Bot):
         self.pathfinder = Pathfinder(self.game)
         if self.customer is None:
             self.customer, self.customer_loc = self.pathfinder.get_closest_customer(get_hero_pos(self.game))
+            print("Customer: {} -- customer loc: {}".format(self.customer, self.customer_loc))
         return self.next_state()
 
     def get_fries(self):
