@@ -179,9 +179,13 @@ class SimpleBot(Bot):
 
             print("Direction choisi: {} -- opportunite: {}".format(type(direction), type(dir)))
             if direction != dir and (isinstance(tile, FriesTile) or isinstance(tile, BurgerTile)):
+
+                owner_id = tile.hero_id
+                if owner_id == '-':
+                    owner_id = '-1'
                 print(type(tile.hero_id))
                 print(type(get_our_hero_id(self.game)))
-                if tile.hero_id != get_our_hero_id(self.game):
+                if int(owner_id) != get_our_hero_id(self.game):
                     return dir
 
 
