@@ -49,9 +49,8 @@ class SimpleBot(Bot):
 
         if self.fries_loc is None:
             print("Choosing new fries")
-            fries_tile = self.pathfinder.get_closest_fries(get_hero_pos(
+            fries_tile, self.fries_loc = self.pathfinder.get_closest_fries(get_hero_pos(
                 self.game))
-            _ , self.fries_loc = fries_tile
             print("Fries tile id owner: {} -- fries location: {}".format(fries_tile.hero_id, self.fries_loc))
 
         client_fries = self.customer.french_fries
