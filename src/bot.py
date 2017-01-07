@@ -52,7 +52,7 @@ class SimpleBot(Bot):
             fries_tile = self.pathfinder.get_closest_fries(get_hero_pos(
                 self.game))
             _ , self.fries_loc = fries_tile
-            print(self.fries_loc)
+            print("Fries tile: {} -- fries location: {}".format(fries_tile, self.fries_loc))
 
         client_fries = self.customer.french_fries
         hero_fries = get_hero_fries(self.game)
