@@ -87,10 +87,10 @@ class SimpleBot(Bot):
             self.burger_loc = None
 
         if hero_burgers >= client_burgers:
-            if get_hero_fries() >= self.customer.french_fries:
+            if get_hero_fries(self.game) >= self.customer.french_fries:
                 self.next_state = self.goto_customer
             else:
-                self.next_state = self.get_fries()
+                self.next_state = self.get_fries(self.game)
         else:
             self.next_state = self.get_burgers
 
