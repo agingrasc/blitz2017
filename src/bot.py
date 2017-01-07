@@ -40,7 +40,8 @@ class SimpleBot(Bot):
         self.game = Game(state)
         self.pathfinder = Pathfinder(self.game)
         if self.customer is None:
-            self.customer, self.customer_loc = self.pathfinder.get_closest_customer(get_hero_pos(self.game))
+            _, self.customer_loc = self.pathfinder.get_closest_customer(get_hero_pos(self.game))
+            self.customer = get_customer_by_pos(self.customer_loc, self.game)
             print("Customer: {} -- customer loc: {}".format(self.customer, self.customer_loc))
         return self.next_state()
 
@@ -171,4 +172,18 @@ def get_order_lowest_value(game):
             id = customer.id
 
     return id, num_fries, num_burger
+
+def get_customer_by_pos(pos, game):
+    state = game.state
+    tiles = state['game']['board']['tiles']
+    size = state['game']['board']['size']
+    vector = [tiles[i:i+2] for i in range(0, len(tiles), 2)]
+    matrix = [vector[i:i+size] for i in range(0, len(vector), size)]
+    row, col = pos
+    raw_tile = matrix[row][col]
+    customer_id = int(raw_tile[1])
+
+    for customer in game.customers:
+        if customer.id == customer_id:
+            return customer
 
