@@ -25,7 +25,6 @@ class NorthState(MoveState):
         return 'NORTH'
 
 
-
 class SouthState(MoveState):
     def get_dir(self):
         # envoie la direction
