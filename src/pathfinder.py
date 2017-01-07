@@ -52,6 +52,5 @@ class Pathfinder:
                 owner_id = "-1"
 
             if int(owner_id) != self.our_hero_id:
-                print("Food location: {} -- food owner id: {}".format(pos, owner_id))
                 food_positions.append(pos)
         return food_positions
