@@ -24,10 +24,9 @@ class RandomBot(Bot):
 class SimpleBot(Bot):
     def __init__(self):
         self.customer = None
+        self.customer_loc = None
         self.game = None
         self.next_state = self.init
-        self.attempted_loc = None
-        self.attempted_loc_idx = 0
         self.fries_loc = None
         self.burger_loc = None
         self.pathfinder = None
@@ -41,7 +40,7 @@ class SimpleBot(Bot):
         self.game = Game(state)
         self.pathfinder = Pathfinder(self.game)
         if self.customer is None:
-            self.customer = choice(self.game.customers)
+            self.customer, self.customer_loc = self.pathfinder.get_closest_customer(get_hero_pos(self.game))
         return self.next_state()
 
     def get_fries(self):
@@ -77,8 +76,9 @@ class SimpleBot(Bot):
     def get_burgers(self):
 
         if self.burger_loc is None:
-            print("choosing new fries")
-            self.burger_loc = choice(list(self.game.burger_locs.keys()))
+            print("Choosing new burger")
+            burger_tile, self.burger_loc = \
+                self.pathfinder.get_closest_burger(get_hero_pos(self.game))
             print(type(self.burger_loc))
 
         client_burgers = self.customer.burger
@@ -100,24 +100,14 @@ class SimpleBot(Bot):
 
     def goto_customer(self):
 
-        if self.attempted_loc is None:
-            self.attempted_loc_idx = 0
-            self.attempted_loc = list(self.game.customers_locs)[
-                self.attempted_loc_idx]
-            self.attempted_loc_idx += 1
-
-        direction = get_direction(self.game, self.attempted_loc)
+        direction = get_direction(self.game, self.customer_loc)
         hero_loc = get_hero_pos(self.game)
-        if self.pathfinder.get_distance(self.attempted_loc, hero_loc) <= 1:
-            self.attempted_loc = list(self.game.customers_locs)[
-                self.attempted_loc_idx]
-            self.attempted_loc_idx += 1
-        elif self.attempted_loc_idx >= len(self.game.customers_locs):
+        if self.pathfinder.get_distance(self.customer_loc, hero_loc) <= 1:
+            self.customer = None
+            self.customer_loc = None
             self.get_fries()
 
         return direction
-
-
 
 
 def get_direction(game, destination, service=True):
